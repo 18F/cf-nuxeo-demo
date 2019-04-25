@@ -13,22 +13,11 @@ Here are the goals of this project and how we'll measure its success.
 ## Quick Start
 
 ```sh
-cf push nuxeo-dev -k 3600M --docker-image pburkholder/nuxeo -t 180 -m 1G
+cf push
 ```
 
-Notes:
-- `-k 3600M`: Set disk limit since the full image is huge
-- `--docker-image pburkholder/nuxeo`: See https://github.com/nuxeo/docker-nuxeo/issues/30
-- `-t 180`: Allow 3 minutes for the health check to pass, instead of the
-  default 1 minute
-- `-m 1G`: Bump RAM quota from 512M to 1024M
+By default, this will allocate Nuxeo to a "random route" in your Foundry, for example, `nuxeo-insightful-cat.app.cloud.gov`. 
 
-That will get a bare instance up, but to add the web UI and sample content,
-run:
-
-```sh
-cf set-env nuxeo-dev NUXEO_PACKAGES "nuxeo-dam nuxeo-web-ui nuxeo-platform-getting-started"
-cf restage nuxeo-dev
 ```
 
 ## Contributing
