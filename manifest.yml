@@ -1,0 +1,13 @@
+---
+applications:
+- name: nuxeo
+  disk_quota: 3600M    # yes, this image is big,
+  memory: 1600M        # and needs lots of memory,
+  timeout: 180         # and takes 3 minutes to be healthy
+  docker:
+    image: nuxeo
+#  random_route: true
+  routes:
+  - route: nuxeo-pdb.app.cloud.gov
+  env:
+    NUXEO_PACKAGES: "nuxeo-dam nuxeo-web-ui nuxeo-platform-getting-started"
