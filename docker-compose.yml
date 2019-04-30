@@ -5,37 +5,36 @@ services:
     volumes:
       - database_data:/var/lib/postgresql/data:delegated
     environment:
-      POSTGRES_PASSWORD: nuxeo
-      POSTGRES_USER: nuxeo
+      POSTGRES_PASSWORD: dockernuxeo
+      POSTGRES_USER: dockernuxeo
+      POSTGRES_DB: nuxeo
   nuxeo:
     build: .docker
-    image: nuxeo
+    image: pburkholder/nuxeo
     ports:
       - 8080:8080
     volumes:
       - nuxeo_data:/var/lib/nuxeo/data:delegated
     environment:
        NUXEO_DB_TYPE: postgresql
+       NUXEO_PACKAGES: "nuxeo-dam nuxeo-web-ui nuxeo-platform-getting-started"
        VCAP_SERVICES: >
         { "aws-rds": [{
             "name": "database",
             "credentials": {
               "db_name": "nuxeo",
               "host": "database",
-              "password": "nuxeo",
+              "password": "dockernuxeo",
               "port": "3306",
-              "username": "nuxeo"
+              "username": "dockernuxeo"
             }
           }]
         }
-#    command: ["sh", "-c", "env; pwd; ls /; cat $$NUXEO_CONF"]
-#    command: ["sh", "-c", "creds=`echo $$VCAP_SERVICES | jq '.\"aws-rds\"[0].credentials'`; echo $$creds; NUXEO_DB_HOST=database exec nuxeoctl console"]
-#    depends_on:
-#      - database
+    depends_on:
+      - database
 #      - bucketmaker
 #       NUXEO_DB_HOST: database
 #      # 
-#      NUXEO_PACKAGES: "nuxeo-dam nuxeo-web-ui nuxeo-platform-getting-started"
 #      CF_INSTANCE_INDEX: '0'
 #      VCAP_APPLICATION: >
 #        {"name": "web"}
