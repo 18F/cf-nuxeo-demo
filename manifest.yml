@@ -1,13 +1,24 @@
 ---
-applications:
-- name: nuxeo
+default_nuxeo: &defaults
   disk_quota: 3600M    # yes, this image is big,
   memory: 1600M        # and needs lots of memory,
   timeout: 180         # and takes 3 minutes to be healthy
   docker:              
     image: pburkholder/nuxeo  # customized to consume VCAP_SERVICES
-#  random_route: true
+
+applications:
+- name: nuxeo     # simple standalone quick start
+  <<: *defaults
+  random_route: true
+  env:
+    NUXEO_PACKAGES: "nuxeo-dam nuxeo-web-ui nuxeo-platform-getting-started"
+
+- name: nuxeo-pdb
+  <<: *defaults
   routes:
   - route: nuxeo-pdb.app.cloud.gov
   env:
     NUXEO_PACKAGES: "nuxeo-dam nuxeo-web-ui nuxeo-platform-getting-started"
+  services: 
+  - database  # must be named 'database', e.g.:
+              # cf create-service aws-rds shared-psql database
