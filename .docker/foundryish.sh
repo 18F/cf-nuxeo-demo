@@ -1,19 +1,17 @@
-#!/bin/sh
+#!/bin/bash
+set -euo pipefail
 
-function update_nuxeo_conf () {
-  sed --in-place -r -e "s/^($1)/# \1/" $NUXEO_CONF
-  echo "$1=$2" >> $NUXEO_CONF
+fail() {
+  echo $0 FAIL: "$@"
+  exit 1
 }
 
-## AWS ###
-awsrds_creds=$(echo $VCAP_SERVICES | jq '."aws-rds"[0].credentials')
+DB_CREDS=$(echo $VCAP_SERVICES | jq -r '.["aws-rds"][] | select(.name == "database") | .credentials') ||
+  fail "Unable to parse DB_CREDS from VCAP_SERVICES for aws-rds[].name = database"
 
-db_host=`echo $awsrds_creds     | jq -r '.host'`
-db_name=`echo $awsrds_creds     | jq -r '.db_name'`
-db_user=`echo $awsrds_creds     | jq -r '.username'`
-db_password=`echo $awsrds_creds | jq -r '.password'`
+export NUXEO_DB_HOST=`echo $DB_CREDS | jq -r '.host'`
+export NUXEO_DB_NAME=`echo $DB_CREDS | jq -r '.db_name'`
+export NUXEO_DB_USER=`echo $DB_CREDS | jq -r '.username'`
+export NUXEO_DB_PASSWORD=`echo $DB_CREDS | jq -r '.password'`
 
-[ $db_host ] && update_nuxeo_conf nuxeo.db.host $db_host
-[ $db_name ] && update_nuxeo_conf nuxeo.db.name $db_name
-[ $db_user ] && update_nuxeo_conf nuxeo.db.user $db_user
-[ $db_password ] && update_nuxeo_conf nuxeo.db.password $db_password
+exec /docker-entrypoint.sh "$@"

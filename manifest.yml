@@ -19,6 +19,7 @@ applications:
   - route: nuxeo-pdb.app.cloud.gov
   env:
     NUXEO_PACKAGES: "nuxeo-dam nuxeo-web-ui nuxeo-platform-getting-started"
+    NUXEO_DB_TYPE: "postgresql"
   services: 
   - database  # must be named 'database', e.g.:
               # cf create-service aws-rds shared-psql database
