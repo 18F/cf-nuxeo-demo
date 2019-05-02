@@ -13,12 +13,19 @@ Here are the goals of this project and how we'll measure its success.
 ## Quick Start
 
 ```sh
-cf push
+cf push nuxeo
 ```
+
+The above command will run a standalone Docker container with an embedded database and elasticsearch.  All you work will be lost if the container restarts.
+
 
 By default, this will allocate Nuxeo to a "random route" in your Foundry, for example, `nuxeo-insightful-cat.app.cloud.gov`. 
 
-```
+
+## Adding backing services
+
+```sh
+cf create-service aws-rds shared-psql database
 
 ## Contributing
 
