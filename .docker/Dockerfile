@@ -3,6 +3,7 @@ USER root
 RUN apt-get update && apt-get install -y --no-install-recommends jq
 
 COPY foundryish.sh /
+COPY nuxeo.conf /docker-entrypoint-initnuxeo.d/nuxeo.conf
 
 ENTRYPOINT ["/foundryish.sh"]
 CMD ["nuxeoctl","console"]

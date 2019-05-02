@@ -17,7 +17,7 @@ services:
       - nuxeo_data:/var/lib/nuxeo/data:delegated
     environment:
        NUXEO_DB_TYPE: postgresql
-       NUXEO_PACKAGES: "nuxeo-dam nuxeo-web-ui nuxeo-platform-getting-started"
+       NUXEO_PACKAGES: "nuxeo-dam nuxeo-web-ui nuxeo-platform-getting-started amazon-s3-online-storage"
        VCAP_SERVICES: >
         { "aws-rds": [{
             "name": "database",
@@ -32,7 +32,8 @@ services:
         }
     depends_on:
       - database
-#      - bucketmaker
+      - storage
+      - bucketmaker
 #       NUXEO_DB_HOST: database
 #      # 
 #      CF_INSTANCE_INDEX: '0'
@@ -62,34 +63,34 @@ services:
 #            "plan": "basic-public"
 #           }]
 #        }
-#  storage:
-#    restart: always
-#    networks:
-#      default:
-#        aliases:
-#          - cg-bucket.s3-us-west-1.amazonaws.com
-#          - s3-us-west-1.amazonaws.com
-#    image: minio/minio:latest
-#    environment:
-#      MINIO_DOMAIN: "s3-us-west-1.amazonaws.com"
-#      MINIO_ACCESS_KEY: ACCESS_KEY_ID
-#      MINIO_SECRET_KEY: secret123
-#    command: minio server --address 0.0.0.0:80 /var/data/fakes3
-#    volumes:
-#      - storage_data:/var/data/fakes3:delegated
-#  bucketmaker:
-#    image: minio/mc
-#    environment:
-#      MINIO_ACCESS_KEY: ACCESS_KEY_ID
-#      MINIO_SECRET_KEY: secret123
-#    entrypoint: >
-#      /bin/sh -c "
-#      /usr/bin/mc config host add storage http://storage ACCESS_KEY_ID secret123;
-#      /usr/bin/mc mb storage/cg-bucket;
-#      /usr/bin/mc policy download storage/cg-bucket/public"
-#    depends_on:
-#      - storage
+  storage:
+    restart: always
+    networks:
+      default:
+        aliases:
+          - cg-bucket.s3-us-west-1.amazonaws.com
+          - s3-us-west-1.amazonaws.com
+    image: minio/minio:latest
+    environment:
+      MINIO_DOMAIN: "s3-us-west-1.amazonaws.com"
+      MINIO_ACCESS_KEY: ACCESS_KEY_ID
+      MINIO_SECRET_KEY: secret123
+    command: minio server --address 0.0.0.0:80 /var/data/fakes3
+    volumes:
+      - storage_data:/var/data/fakes3:delegated
+  bucketmaker:
+    image: minio/mc
+    environment:
+      MINIO_ACCESS_KEY: ACCESS_KEY_ID
+      MINIO_SECRET_KEY: secret123
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add storage http://storage ACCESS_KEY_ID secret123;
+      /usr/bin/mc mb storage/cg-bucket;
+      /usr/bin/mc policy download storage/cg-bucket/public"
+    depends_on:
+      - storage
 volumes:
   nuxeo_data:
   database_data:
-#  storage_data:
+  storage_data:
