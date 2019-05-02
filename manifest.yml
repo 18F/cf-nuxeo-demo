@@ -15,8 +15,6 @@ applications:
 
 - name: nuxeo-pdb
   <<: *defaults
-  docker:
-    image: nuxeo
   routes:
   - route: nuxeo-pdb.app.cloud.gov
   env:
