@@ -17,6 +17,7 @@ services:
       - nuxeo_data:/var/lib/nuxeo/data:delegated
     environment:
        NUXEO_DB_TYPE: postgresql
+       NUXEO_CLID: "49ef6ec4-31ba-4176-a88f-ed506cff1f82.1559432297.DpSC3DPdcDiQ/FR8y08AlkN1S6XFnkwpO35RF6TYGXlOLZL/QXF8RUwgYel2Bjqr5u8EJ/kNom2UzMpMAp61RPmAEEFgtYvumuDCc3EL6Ddbnu+mn3tfdX9zE9NWJVio6WDGnxAu4QU0yExk8IYgy7usN7x3NQ56OXo1dfOJ24uGmnqW1nWKuYlQFd8dta3wkK/cKqlpQutfwY4nC9KsYldzO/kVSGLdCVY5+TfrHDGeDmNpewmc8o78MGOwrj2Ofm5yxzRFjHJ5rUFSIxgb1TkUj2DkXtRML3yAGvBl4gMoL2ifVrpGYJ3gvkvqCosk8adWhGVSNAzyKrZn0GtadA==--3cbe013c-8daf-4744-bdc6-64eb1cc1b066"
        NUXEO_PACKAGES: "nuxeo-dam nuxeo-web-ui nuxeo-platform-getting-started amazon-s3-online-storage"
        VCAP_SERVICES: >
         { "aws-rds": [{
@@ -54,10 +55,10 @@ services:
 #            "s3fake": "true",
 #            "credentials": {
 #              "access_key_id": "ACCESS_KEY_ID",
-#              "bucket": "cg-bucket",
+#              "bucket": "cgbucket",
 #              "region": "us-west-1",
 #              "secret_access_key": "secret123",
-#              "uri": "s3://ACCESS_KEY_ID:secret123@storage/cg-bucket"
+#              "uri": "s3://ACCESS_KEY_ID:secret123@storage/cgbucket"
 #            },
 #            "label": "s3",
 #            "plan": "basic-public"
@@ -68,7 +69,7 @@ services:
     networks:
       default:
         aliases:
-          - cg-bucket.s3-us-west-1.amazonaws.com
+          - cgbucket.s3-us-west-1.amazonaws.com
           - s3-us-west-1.amazonaws.com
     image: minio/minio:latest
     environment:
@@ -86,8 +87,8 @@ services:
     entrypoint: >
       /bin/sh -c "
       /usr/bin/mc config host add storage http://storage ACCESS_KEY_ID secret123;
-      /usr/bin/mc mb storage/cg-bucket;
-      /usr/bin/mc policy download storage/cg-bucket/public"
+      /usr/bin/mc mb storage/cgbucket;
+      /usr/bin/mc policy download storage/cgbucket/public"
     depends_on:
       - storage
 volumes:
